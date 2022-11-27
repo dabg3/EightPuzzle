@@ -10,7 +10,9 @@ import javax.swing.JLabel;
 
 import com.ziccolella.puzzle.Events_and_Listeners.*;
 
-//This buddy must check if a move is legal or not
+/*
+ * EightController checks the legal move
+ */
 public class EightController extends JLabel implements EightRestart.Listener, VetoableChangeListener{
     private static final int ROWS = 3;
     private static final int COLS = 3;

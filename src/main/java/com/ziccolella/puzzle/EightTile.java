@@ -11,8 +11,15 @@ import javax.swing.JButton;
 import com.ziccolella.puzzle.Events_and_Listeners.EightRestart;
 
 public class EightTile extends JButton implements EightRestart.Listener,PropertyChangeListener{
-    final int position; //It's a constant
-    int label; //It's a Bound and Constrained property
+    private final int position;
+
+    /*
+     * label represents the number positioned on this tile at a certain point in the game.
+     * It is a Bound property, listeners must be notified when its value changes.
+     * It is a Constrained property also, changes must be 'vetoed' by EightController.
+     * https://docs.oracle.com/javase/tutorial/javabeans/writing/properties.html
+     */
+    private int label;
 
     protected PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
     protected VetoableChangeSupport mVcs = new VetoableChangeSupport(this);

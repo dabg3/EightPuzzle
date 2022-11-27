@@ -11,6 +11,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 
+/*
+ * EightBoard manages everything concerning graphics: elements, layout...
+ */
 public class EightBoard extends JFrame{
     private static final int ROWS = 3;
     private static final int COLS = 3;
