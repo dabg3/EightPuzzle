@@ -8,12 +8,12 @@ import java.util.Collections;
 
 import javax.swing.JLabel;
 
-import com.ziccolella.puzzle.Events_and_Listeners.*;
+import com.ziccolella.puzzle.restart.*;
 
 /*
  * EightController checks the legal move
  */
-public class EightController extends JLabel implements EightRestart.Listener, VetoableChangeListener{
+public class EightController extends JLabel implements EightRestart.Listener, VetoableChangeListener {
     private static final int ROWS = 3;
     private static final int COLS = 3;
 
@@ -28,14 +28,14 @@ public class EightController extends JLabel implements EightRestart.Listener, Ve
     }
 
     private ArrayList<Integer> current_conf;
-    Direction[] moves = { new Direction(-1, 0), new Direction(0, -1), new Direction(1, 0), new Direction(0, 1) };
+    Direction[] moves = {new Direction(-1, 0), new Direction(0, -1), new Direction(1, 0), new Direction(0, 1)};
 
     public EightController() {
         this.setText("START");
     }
 
     //Veto implementation
-    public void vetoableChange(PropertyChangeEvent e) throws PropertyVetoException{
+    public void vetoableChange(PropertyChangeEvent e) throws PropertyVetoException {
         System.out.println("I'm the controller, lemme check, one sec");
 
         int current_hole_p = current_conf.indexOf(9);
@@ -44,10 +44,10 @@ public class EightController extends JLabel implements EightRestart.Listener, Ve
 
         //Check if hole is adacient and reachable
         for (Direction d : moves) {
-            possible_move_p = clicked_pos + d.x + d.y*COLS;
+            possible_move_p = clicked_pos + d.x + d.y * COLS;
             if (current_hole_p == possible_move_p) {
                 System.out.println("Ok, go on");
-                Collections.swap(current_conf,current_conf.indexOf(e.getOldValue()),current_conf.indexOf(e.getNewValue()));
+                Collections.swap(current_conf, current_conf.indexOf(e.getOldValue()), current_conf.indexOf(e.getNewValue()));
                 return;
             }
         }
@@ -64,7 +64,7 @@ public class EightController extends JLabel implements EightRestart.Listener, Ve
         current_conf = e.payload;
     }
 
-    
+
     /* DOCUMENTATION USEFUL TO UNDERSTAND WHAT HAPPENED:
      * A "PropertyChange" event gets delivered whenever a bean changes a "bound" or
      * "constrained" property.
