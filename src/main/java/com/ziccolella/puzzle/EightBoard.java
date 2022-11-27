@@ -9,14 +9,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyVetoException;
 
 /*
- * EightBoard manages everything concerning graphics: elements, layout...
+ * EightBoard manages the elements to be displayed and their layout.
  */
 public class EightBoard extends JFrame {
-    private static final int ROWS = 3;
-    private static final int COLS = 3;
 
     private EightController controller;
     private JButton restart_butt;
@@ -46,14 +43,14 @@ public class EightBoard extends JFrame {
         public BoardGrid() {
 
             //From docu parameters are (int rows, int cols, int hgap, int vgap)
-            this.setLayout(new GridLayout(ROWS, COLS, 3, 3));
+            this.setLayout(new GridLayout(Options.ROWS, Options.COLUMNS, 3, 3));
 
             //Initialize tiles
-            for (int row = 0; row < ROWS; row++) {
-                for (int col = 0; col < COLS; col++) {
+            for (int row = 0; row < Options.ROWS; row++) {
+                for (int col = 0; col < Options.COLUMNS; col++) {
 
                     //Create Eightile
-                    EightTile tile = new EightTile((row * COLS) + col);
+                    EightTile tile = new EightTile((row * Options.COLUMNS) + col);
 
                     //Add click behaviour
                     tile.addActionListener(e -> click(e)); //LAMBDA <3
@@ -80,18 +77,13 @@ public class EightBoard extends JFrame {
 
         public void click(ActionEvent e) {
             EightTile clicked_tile = (EightTile) e.getSource();
-            try {
-                hole_tile.setLabel(clicked_tile.getLabel());
+            hole_tile.setText(clicked_tile.getText());
 
-                hole_tile.setEnabled(true);
-                clicked_tile.setEnabled(false);
+            hole_tile.setEnabled(true);
+            clicked_tile.setEnabled(false);
 
-                hole_tile = clicked_tile;
-                controller.setText("OK");
-
-            } catch (PropertyVetoException e1) {
-                controller.setText("KO");
-            }
+            hole_tile = clicked_tile;
+            controller.setText("OK");
         }
     }
 
