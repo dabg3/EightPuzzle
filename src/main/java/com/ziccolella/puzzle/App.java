@@ -1,5 +1,9 @@
 package com.ziccolella.puzzle;
 
+import javax.swing.*;
+
+import static java.util.logging.Logger.getLogger;
+
 public class App {
 
     public static void main(String[] args) {
@@ -14,29 +18,20 @@ public class App {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("nimbus".equalsIgnoreCase(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EightBoard.class.getName()).log(java.util.logging.Level.SEVERE, null,
-                    ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EightBoard.class.getName()).log(java.util.logging.Level.SEVERE, null,
-                    ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EightBoard.class.getName()).log(java.util.logging.Level.SEVERE, null,
-                    ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EightBoard.class.getName()).log(java.util.logging.Level.SEVERE, null,
-                    ex);
+        } catch (ClassNotFoundException |
+                 InstantiationException |
+                 IllegalAccessException |
+                 UnsupportedLookAndFeelException ex) {
+            getLogger(EightBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EightBoard().setVisible(true);
-            }
+
+        java.awt.EventQueue.invokeLater(() -> {
+            new EightBoard().setVisible(true);
         });
     }
 }
