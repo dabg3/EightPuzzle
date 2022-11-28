@@ -1,79 +1,61 @@
 package com.ziccolella.puzzle;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.List;
 
 import javax.swing.JLabel;
 
 import com.ziccolella.puzzle.restart.*;
 
 /*
- * EightController checks the legal move
+ * EightController checks the legal move.
+ * It uses bitboards to represent information (i.e a set of 9 bits, each bit represent a tile)
+ * Considering how positions are laid out by assigment:
+ * An hole on position 9 is represented as 000000001
+ * An hole on position 1 is represented as 100000000
+ * An hole on position 4 is represented as 000100000
+ * and so on...
+ *
+ * This is a famous concept in chess engines.
+ * https://www.chessprogramming.org/Bitboards
  */
-public class EightController extends JLabel implements EightRestart.Listener, VetoableChangeListener {
+public class EightController extends JLabel implements VetoableChangeListener, PropertyChangeListener {
 
-    public class Direction {
-        final int x;
-        final int y;
-
-        Direction(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
-
-    private ArrayList<Integer> current_conf;
-    Direction[] moves = {new Direction(-1, 0), new Direction(0, -1), new Direction(1, 0), new Direction(0, 1)};
+    private int holePosition;
 
     public EightController() {
-        this.setText("START");
+        setText("START");
     }
 
-    //Veto implementation
-    public void vetoableChange(PropertyChangeEvent e) throws PropertyVetoException {
-        System.out.println("I'm the controller, lemme check, one sec");
-
-        int current_hole_p = current_conf.indexOf(9);
-        int clicked_pos = current_conf.indexOf(e.getNewValue());
-        int possible_move_p;
-
-        //Check if hole is adacient and reachable
-        for (Direction d : moves) {
-            possible_move_p = clicked_pos + d.x + d.y * Options.COLUMNS;
-            if (current_hole_p == possible_move_p) {
-                System.out.println("Ok, go on");
-                Collections.swap(current_conf, current_conf.indexOf(e.getOldValue()), current_conf.indexOf(e.getNewValue()));
-                return;
-            }
+    public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
+        if (!(evt.getSource() instanceof EightTile movedTile)) {
+            throw new RuntimeException("");
         }
 
-        System.out.println("Nah, try again");
-        throw new PropertyVetoException("YO", e);
+        if (!isTileMovible(movedTile.getPosition())) {
+            throw new PropertyVetoException("Clicked tile cannot be moved", evt);
+        }
+    }
+
+    private boolean isTileMovible(int tilePosition) {
+        int distance = Math.abs(holePosition - tilePosition);
+        if (distance == 3 || distance == 1) {
+            return true;
+        }
+        return false;
     }
 
 
-    // Restart Event implementation
+    //restart
     @Override
-    public void restart(EightRestart.Event e) {
-        this.setText("RESETTED");
-        current_conf = e.payload;
+    public void propertyChange(PropertyChangeEvent evt) {
+        List<Integer> labels = (List<Integer>) evt.getNewValue();
+        holePosition = labels.indexOf(Options.HOLE_VALUE) + 1;
     }
-
-
-    /* DOCUMENTATION USEFUL TO UNDERSTAND WHAT HAPPENED:
-     * A "PropertyChange" event gets delivered whenever a bean changes a "bound" or
-     * "constrained" property.
-     * A PropertyChangeEvent object is sent as an argument to the
-     * PropertyChangeListener and VetoableChangeListener methods.
-     * Normally PropertyChangeEvents are accompanied by the name and the old and new
-     * value of the changed property.
-     * If the new value is a primitive type (such as int or boolean) it must be
-     * wrapped as the corresponding java.lang.* Object type (such as Integer or
-     * Boolean).
-     * Null values may be provided for the old and the new values if their true
-     * values are not known.
-     */
 }

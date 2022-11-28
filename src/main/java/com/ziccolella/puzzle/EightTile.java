@@ -1,17 +1,11 @@
 package com.ziccolella.puzzle;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyVetoException;
-import java.beans.VetoableChangeListener;
-import java.beans.VetoableChangeSupport;
+import java.beans.*;
+import java.util.List;
 
 import javax.swing.JButton;
 
-import com.ziccolella.puzzle.restart.EightRestart;
-
-public class EightTile extends JButton implements EightRestart.Listener, PropertyChangeListener {
+public class EightTile extends JButton implements PropertyChangeListener {
     /*
      * position indexes a tile on the board.
      * Top left is 1, bottom right is 9
@@ -51,26 +45,6 @@ public class EightTile extends JButton implements EightRestart.Listener, Propert
         this.mPcs.firePropertyChange("label", this.label, tileNumber);
     }
 
-    @Override
-    public void restart(EightRestart.Event e) {
-        label = e.payload.get(position);
-        setText(String.valueOf(label));
-        // TODO: improve enable/disable
-        if (label == 9) this.setEnabled(false);
-        else this.setEnabled(true);
-    }
-
-    /*
-     * should this method contain logic????
-     * It is defined by PropertyChangeListener
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-      System.out.println(e.getNewValue());
-      System.out.println(e.getOldValue());
-      
-    }
-
     public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
         if (mPcs == null) {
             mPcs = new PropertyChangeSupport(this);
@@ -97,5 +71,12 @@ public class EightTile extends JButton implements EightRestart.Listener, Propert
             return;
         }
         mVcs.removeVetoableChangeListener(l);
+    }
+
+    //restart
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        this.label = ((List<Integer>) evt.getNewValue()).get(position - 1);
+        setText(String.valueOf(label));
     }
 }
