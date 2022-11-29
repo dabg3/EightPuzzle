@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Restart extends AbstractAction {
+public class RestartAction extends AbstractAction {
 
     private List<Integer> labelsByPosition = new ArrayList<>();
 

@@ -1,6 +1,6 @@
 package xyz.forfun.puzzle;
 
-import xyz.forfun.puzzle.restart.Restart;
+import xyz.forfun.puzzle.restart.RestartAction;
 
 import javax.swing.*;
 
@@ -15,14 +15,14 @@ import java.util.ArrayList;
 public class EightBoard extends JFrame implements PropertyChangeListener {
 
     private EightController controller;
-     private Restart restartAction = new Restart();
+     private RestartAction restart = new RestartAction();
 
     public ArrayList<EightTile> tiles = new ArrayList<>();
     public EightTile hole_tile;
 
     public EightBoard() {
         initComponents();
-        restartAction.actionPerformed(null); //init board
+        restart.actionPerformed(null); //init board
     }
 
     private void initComponents() {
@@ -37,10 +37,10 @@ public class EightBoard extends JFrame implements PropertyChangeListener {
         JPanel control = new JPanel(new GridLayout(1, 3, 0, 3));
         controller = new EightController();
         control.add(controller);
-        restartAction.addPropertyChangeListener(controller);
+        restart.addPropertyChangeListener(controller);
 
         JButton restart_butt = new JButton("Restart");
-        restart_butt.addActionListener(restartAction);
+        restart_butt.addActionListener(restart);
         control.add(restart_butt);
 
         /*
@@ -57,7 +57,7 @@ public class EightBoard extends JFrame implements PropertyChangeListener {
                 EightTile tile = new EightTile(pos + 1);
                 tile.addVetoableChangeListener(controller);
                 tile.addPropertyChangeListener(this);
-                restartAction.addPropertyChangeListener(tile);
+                restart.addPropertyChangeListener(tile);
                 board.add(tile);
                 tiles.add(tile);
         }
