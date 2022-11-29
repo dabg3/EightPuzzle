@@ -48,6 +48,21 @@ public class Bitboards {
         return bitboard;
     }
 
+   /*
+    * Instantiation helpers
+    */
+
+    public static BitSet instance() {
+        return evaluate(b -> b);
+    }
+
+    public static BitSet instance(int pos) {
+        return evaluate(b -> {
+            b.set(pos);
+            return b;
+        });
+    }
+
     private Bitboards() {
     }
 }
