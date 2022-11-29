@@ -1,4 +1,4 @@
-package com.ziccolella.puzzle;
+package xyz.forfun.puzzle;
 
 public class Options {
 

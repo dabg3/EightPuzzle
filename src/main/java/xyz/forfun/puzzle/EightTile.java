@@ -1,4 +1,4 @@
-package com.ziccolella.puzzle;
+package xyz.forfun.puzzle;
 
 import java.beans.*;
 import java.util.List;

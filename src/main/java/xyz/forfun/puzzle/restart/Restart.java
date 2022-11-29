@@ -1,4 +1,4 @@
-package com.ziccolella.puzzle.restart;
+package xyz.forfun.puzzle.restart;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

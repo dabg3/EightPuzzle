@@ -1,6 +1,6 @@
-package com.ziccolella.puzzle;
+package xyz.forfun.puzzle;
 
-import com.ziccolella.puzzle.restart.Restart;
+import xyz.forfun.puzzle.restart.Restart;
 
 import javax.swing.*;
 
