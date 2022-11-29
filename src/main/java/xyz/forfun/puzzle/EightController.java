@@ -18,7 +18,7 @@ import javax.swing.JLabel;
  * An hole on position 4 is represented as 000100000
  * and so on...
  *
- * I consider bit at index 0 as the "rightmost" bit:
+ * I consider bit at index 0 as the "leftmost" bit:
  * BitSet bitboard = new BitSet(9);
  * bitboard.set(0) -> 100000000
  * bitboard.set(9) -> 100000001
