@@ -3,11 +3,11 @@ package xyz.forfun.puzzle;
 import xyz.forfun.puzzle.restart.RestartAction;
 
 import javax.swing.*;
-
-import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
+import java.beans.PropertyVetoException;
 
 /*
  * EightBoard manages the elements to be displayed and their layout.
@@ -16,9 +16,6 @@ public class EightBoard extends JFrame implements PropertyChangeListener {
 
     private EightController controller;
      private RestartAction restart = new RestartAction();
-
-    public ArrayList<EightTile> tiles = new ArrayList<>();
-    public EightTile hole_tile;
 
     public EightBoard() {
         initComponents();
@@ -53,20 +50,45 @@ public class EightBoard extends JFrame implements PropertyChangeListener {
 
     private JPanel initBoard() {
         JPanel board = new JPanel(new GridLayout(Options.ROWS, Options.COLUMNS, 3, 3));
-        for (int pos = 0; pos < Options.ROWS * Options.COLUMNS; pos++) {
-                EightTile tile = new EightTile(pos + 1);
+        for (int pos = 1; pos <= Options.ROWS * Options.COLUMNS; pos++) {
+                EightTile tile = new EightTile(pos);
                 tile.addVetoableChangeListener(controller);
                 tile.addPropertyChangeListener(this);
+                tile.addActionListener(this::onTileClick);
                 restart.addPropertyChangeListener(tile);
                 board.add(tile);
-                tiles.add(tile);
         }
         return board;
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    private void onTileClick(ActionEvent evt) {
+        EightTile clickedTile = (EightTile) evt.getSource();
+        try {
+            clickedTile.setLabel(Options.HOLE_VALUE);
+        } catch (PropertyVetoException e) {
+            //flash the tile red
+        }
+    }
 
+    @Override
+    public synchronized void propertyChange(PropertyChangeEvent evt) {
+        if (!evt.getPropertyName().equalsIgnoreCase("label")) {
+            return;
+        }
+        if (!(evt.getSource() instanceof EightTile tile)) {
+            throw new RuntimeException("");
+        }
+        int oldValue = (int) evt.getOldValue();
+        int newValue = (int) evt.getNewValue();
+        if (oldValue == Options.RESTART_VALUE) {
+           tile.setText(String.valueOf(newValue));
+           return;
+        }
+        if (oldValue == Options.HOLE_VALUE) {
+            tile.setText(String.valueOf(newValue));
+        } else {
+            tile.setText("");
+        }
     }
 
 }
