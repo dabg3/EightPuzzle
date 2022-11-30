@@ -8,10 +8,35 @@ import static xyz.forfun.puzzle.Options.ROWS;
 
 public class Bitboards {
 
-    static final BitSet TOP_ROW = evaluate(Bitboards::initTopRow);
-    static final BitSet BOTTOM_ROW = evaluate(Bitboards::initBottomRow);
-    static final BitSet LEFT_COLUMN = evaluate(Bitboards::initLeftColumn);
-    static final BitSet RIGHT_COLUMN = evaluate(Bitboards::initRightColumn);
+    private static final BitSet TOP_ROW = evaluate(Bitboards::initTopRow);
+    private static final BitSet BOTTOM_ROW = evaluate(Bitboards::initBottomRow);
+    private static final BitSet LEFT_COLUMN = evaluate(Bitboards::initLeftColumn);
+    private static final BitSet RIGHT_COLUMN = evaluate(Bitboards::initRightColumn);
+
+    /*
+     * Instantiation helpers
+     */
+
+    public static BitSet instance() {
+        return evaluate(b -> b);
+    }
+
+    public static BitSet instance(int pos) {
+        return evaluate(b -> {
+            b.set(pos);
+            return b;
+        });
+    }
+
+    private static BitSet evaluate(Function<BitSet, BitSet> fun) {
+        BitSet bitboard = new BitSet(ROWS * COLUMNS);
+        bitboard = fun.apply(bitboard);
+        return bitboard;
+    }
+
+    /*
+     * Common bitboards evaluation
+     */
 
     private static BitSet initTopRow(BitSet b) {
         for (int i = 0; i < ROWS; i++) {
@@ -42,25 +67,45 @@ public class Bitboards {
         return b;
     }
 
-    private static BitSet evaluate(Function<BitSet, BitSet> fun) {
-        BitSet bitboard = new BitSet(ROWS * COLUMNS);
-        bitboard = fun.apply(bitboard);
-        return bitboard;
+    /*
+     * API
+     */
+
+    public static boolean isTileMovible(BitSet tile, BitSet hole) {
+        return isLeftMovible(tile, hole)    ||
+                isRightMovible(tile, hole)  ||
+                isUpMovible(tile, hole)     ||
+                isDownMovible(tile, hole);
     }
 
-   /*
-    * Instantiation helpers
-    */
-
-    public static BitSet instance() {
-        return evaluate(b -> b);
+    private static boolean isLeftMovible(BitSet tile, BitSet hole) {
+        return isAdjacent(tile, hole, Bitboards.LEFT_COLUMN, 1);
     }
 
-    public static BitSet instance(int pos) {
-        return evaluate(b -> {
-            b.set(pos);
-            return b;
-        });
+    private static boolean isRightMovible(BitSet tile, BitSet hole) {
+        return isAdjacent(tile, hole, Bitboards.RIGHT_COLUMN, 1);
+    }
+
+    private static boolean isUpMovible(BitSet tile, BitSet hole) {
+        return isAdjacent(tile, hole, Bitboards.TOP_ROW, 3);
+    }
+
+    private static boolean isDownMovible(BitSet tile, BitSet hole) {
+        return isAdjacent(tile, hole, Bitboards.BOTTOM_ROW, 3);
+    }
+
+    private static boolean isAdjacent(BitSet tile, BitSet hole,
+                                      BitSet boardEdge,
+                                      int expectedBitsOffset)
+    {
+        if (boardEdge.intersects(tile)) {
+            return false;
+        }
+        int offset = Math.abs(hole.nextSetBit(0) - tile.nextSetBit(0));
+        if (offset != expectedBitsOffset) {
+            return false;
+        }
+        return true;
     }
 
     private Bitboards() {
