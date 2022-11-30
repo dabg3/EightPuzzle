@@ -85,12 +85,10 @@ public class EightController extends JLabel implements VetoableChangeListener, P
         return true;
     }
 
-
     //restart
     public void propertyChange(PropertyChangeEvent evt) {
         List<Integer> labels = (List<Integer>) evt.getNewValue();
-        hole.clear();
         int holePosition = labels.indexOf(Options.HOLE_VALUE) + 1;
-        hole.set(holePosition);
+        hole = Bitboards.instance(holePosition);
     }
 }
