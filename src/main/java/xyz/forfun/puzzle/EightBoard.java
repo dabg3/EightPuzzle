@@ -91,6 +91,12 @@ public class EightBoard extends JFrame implements PropertyChangeListener {
         }
     }
 
+    public static void main(String[] args) {
+        java.awt.EventQueue.invokeLater(() -> {
+            new EightBoard().setVisible(true);
+        });
+    }
+
 }
 
 
