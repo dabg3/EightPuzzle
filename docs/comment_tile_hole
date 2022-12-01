@@ -1,0 +1,8 @@
+/*
+* Why is true returned if tile matches hole??
+* Since hole button is disabled so not clickable,
+* only when hole label is explicitly set by EightBoard
+* this condition happens to be true.
+* It is my way of addressing labels alignment, while keeping
+* 'label' a bound and constrained property.
+*/
