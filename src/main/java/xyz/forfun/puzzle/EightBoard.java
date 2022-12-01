@@ -9,18 +9,27 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
+import static xyz.forfun.puzzle.Options.HOLE_VALUE;
+import static xyz.forfun.puzzle.Options.RESTART_VALUE;
+
 /*
  * EightBoard manages the elements to be displayed and their layout.
  */
 public class EightBoard extends JFrame implements PropertyChangeListener {
 
     private EightController controller;
-     private RestartAction restart = new RestartAction();
+    private RestartAction restart = new RestartAction();
+
+    private EightTile hole;
 
     public EightBoard() {
         initComponents();
         restart.actionPerformed(null); //init board
     }
+
+    /*
+     * GUI layout
+     */
 
     private void initComponents() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,27 +60,35 @@ public class EightBoard extends JFrame implements PropertyChangeListener {
     private JPanel initBoard() {
         JPanel board = new JPanel(new GridLayout(Options.ROWS, Options.COLUMNS, 3, 3));
         for (int pos = 1; pos <= Options.ROWS * Options.COLUMNS; pos++) {
-                EightTile tile = new EightTile(pos);
-                tile.addVetoableChangeListener(controller);
-                tile.addPropertyChangeListener(this);
-                tile.addActionListener(this::onTileClick);
-                restart.addPropertyChangeListener(tile);
-                board.add(tile);
+            EightTile tile = new EightTile(pos);
+            addListeners(tile);
+            board.add(tile);
         }
         return board;
+    }
+
+    /*
+     * GUI actions
+     */
+
+    private void addListeners(EightTile tile) {
+        tile.addVetoableChangeListener(controller);
+        tile.addPropertyChangeListener(this);
+        tile.addActionListener(this::onTileClick);
+        restart.addPropertyChangeListener(tile);
     }
 
     private void onTileClick(ActionEvent evt) {
         EightTile clickedTile = (EightTile) evt.getSource();
         try {
-            clickedTile.setLabel(Options.HOLE_VALUE);
+            clickedTile.setLabel(HOLE_VALUE);
         } catch (PropertyVetoException e) {
-            //flash the tile red
+            //TODO: flash tile background
         }
     }
 
     @Override
-    public synchronized void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange(PropertyChangeEvent evt) {
         if (!evt.getPropertyName().equalsIgnoreCase("label")) {
             return;
         }
@@ -80,14 +97,26 @@ public class EightBoard extends JFrame implements PropertyChangeListener {
         }
         int oldValue = (int) evt.getOldValue();
         int newValue = (int) evt.getNewValue();
-        if (oldValue == Options.RESTART_VALUE) {
-           tile.setText(String.valueOf(newValue));
-           return;
-        }
-        if (oldValue == Options.HOLE_VALUE) {
-            tile.setText(String.valueOf(newValue));
-        } else {
+
+        if (newValue == HOLE_VALUE) {
             tile.setText("");
+            tile.setEnabled(false);
+            updateHoleLabel(oldValue);
+            hole = tile;
+        } else {
+           tile.setText(String.valueOf(newValue));
+           tile.setEnabled(true);
+        }
+    }
+
+    private void updateHoleLabel(int value) {
+        if (hole == null) {
+            return;
+        }
+        try {
+            hole.setLabel(value);
+        } catch (PropertyVetoException e) {
+            throw new IllegalStateException("Unable to update hole label");
         }
     }
 

@@ -24,10 +24,9 @@ public class EightTile extends JButton implements PropertyChangeListener {
      *
      * if tile is hole then label == 9
      */
-    private int label;
+    private int label = Options.RESTART_VALUE;
 
     public EightTile(int pos) {
-        super(String.valueOf(pos)); //set JButton.text property
         this.position = pos;
     }
 
@@ -44,7 +43,11 @@ public class EightTile extends JButton implements PropertyChangeListener {
     //restart
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        this.label = ((List<Integer>) evt.getNewValue()).get(position - 1);
-        this.firePropertyChange("label", Options.RESTART_VALUE, this.label);
+        List<Integer> restartLabels = (List<Integer>) evt.getNewValue();
+        try {
+            setLabel(restartLabels.get(position - 1));
+        } catch (PropertyVetoException e) {
+            throw new IllegalStateException("Unable to restart");
+        }
     }
 }

@@ -28,7 +28,7 @@ import javax.swing.JLabel;
  */
 public class EightController extends JLabel implements VetoableChangeListener, PropertyChangeListener {
 
-    private BitSet hole; //init on restart
+    private BitSet hole;
 
     public EightController() {
         setText("START");
@@ -38,57 +38,23 @@ public class EightController extends JLabel implements VetoableChangeListener, P
         if (!(evt.getSource() instanceof EightTile movedTile)) {
             throw new RuntimeException("");
         }
-        BitSet tile = Bitboards.instance(movedTile.getPosition());
-        if (!isTileMovible(tile)) {
+        if (((int) evt.getOldValue()) == Options.RESTART_VALUE) {
+            return;
+        }
+        BitSet tile = Bitboards.instance(movedTile.getPosition() - 1);
+        if (tile == hole) {
+            return;
+        }
+        if (!Bitboards.isTileMovible(tile, hole)) {
             throw new PropertyVetoException("Clicked tile cannot be moved", evt);
         }
-    }
-
-    private boolean isTileMovible(BitSet tile) {
-        if (tile == hole) {
-            return false;
-        }
-        if (isHoleOnLeft(tile)  ||
-            isHoleOnRight(tile) ||
-            isHoleOnTop(tile)   ||
-            isHoleOnBottom(tile))
-        {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isHoleOnLeft(BitSet tile) {
-        return isHoleNear(tile, Bitboards.LEFT_COLUMN, 1);
-    }
-
-    private boolean isHoleOnRight(BitSet tile) {
-        return isHoleNear(tile, Bitboards.RIGHT_COLUMN, 1);
-    }
-
-    private boolean isHoleOnTop(BitSet tile) {
-        return isHoleNear(tile, Bitboards.TOP_ROW, 3);
-    }
-
-    private boolean isHoleOnBottom(BitSet tile) {
-        return isHoleNear(tile, Bitboards.BOTTOM_ROW, 3);
-    }
-
-    private boolean isHoleNear(BitSet tile, BitSet edge, int expectedBitsOffset) {
-        if (edge.intersects(tile)) {
-            return false;
-        }
-        int offset = Math.abs(hole.nextSetBit(0) - tile.nextSetBit(0));
-        if (offset != expectedBitsOffset) {
-            return false;
-        }
-        return true;
+        hole = tile;
     }
 
     //restart
     public void propertyChange(PropertyChangeEvent evt) {
         List<Integer> labels = (List<Integer>) evt.getNewValue();
-        int holePosition = labels.indexOf(Options.HOLE_VALUE) + 1;
+        int holePosition = labels.indexOf(Options.HOLE_VALUE);
         hole = Bitboards.instance(holePosition);
     }
 }
