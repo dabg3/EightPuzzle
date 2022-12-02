@@ -1,5 +1,7 @@
 package xyz.forfun.puzzle;
 
+import xyz.forfun.puzzle.label.LabelChangeEvent;
+import xyz.forfun.puzzle.label.TileLabelChangeListener;
 import xyz.forfun.puzzle.restart.RestartAction;
 
 import javax.swing.*;
@@ -15,7 +17,7 @@ import static xyz.forfun.puzzle.Options.RESTART_VALUE;
 /*
  * EightBoard manages the elements to be displayed and their layout.
  */
-public class EightBoard extends JFrame implements PropertyChangeListener {
+public class EightBoard extends JFrame implements TileLabelChangeListener {
 
     private EightController controller;
     private RestartAction restart = new RestartAction();
@@ -73,7 +75,7 @@ public class EightBoard extends JFrame implements PropertyChangeListener {
 
     private void addListeners(EightTile tile) {
         tile.addVetoableChangeListener(controller);
-        tile.addPropertyChangeListener(this);
+        tile.addPropertyChangeListener("label", this);
         tile.addActionListener(this::onTileClick);
         restart.addPropertyChangeListener(tile);
     }
@@ -85,6 +87,11 @@ public class EightBoard extends JFrame implements PropertyChangeListener {
         } catch (PropertyVetoException e) {
             //TODO: flash tile background
         }
+    }
+
+    @Override
+    public void tileLabelChange(LabelChangeEvent evt) {
+        // hole label update should be last instruction (no race conditions)
     }
 
     @Override
@@ -108,6 +115,8 @@ public class EightBoard extends JFrame implements PropertyChangeListener {
            tile.setEnabled(true);
         }
     }
+
+
 
     private void updateHoleLabel(int value) {
         if (hole == null) {
