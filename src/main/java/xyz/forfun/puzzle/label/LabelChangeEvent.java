@@ -6,6 +6,8 @@ import xyz.forfun.puzzle.Options;
 import java.beans.PropertyChangeEvent;
 
 public class LabelChangeEvent extends PropertyChangeEvent {
+
+    //TODO: think about constructor visibility. A factory method is already provided
     /**
      * Constructs a new {@code PropertyChangeEvent}.
      *
@@ -26,7 +28,7 @@ public class LabelChangeEvent extends PropertyChangeEvent {
         return tile;
     }
 
-    public static LabelChangeEvent fromPropertyChangeEvent(PropertyChangeEvent evt) {
+    static LabelChangeEvent fromPropertyChangeEvent(PropertyChangeEvent evt) {
         if (!(evt.getSource() instanceof EightTile tile)) {
             throw new IllegalArgumentException(""); //TODO: add exception message
         }

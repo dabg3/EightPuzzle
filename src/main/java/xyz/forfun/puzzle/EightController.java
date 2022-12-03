@@ -1,5 +1,8 @@
 package xyz.forfun.puzzle;
 
+import xyz.forfun.puzzle.label.LabelChangeEvent;
+import xyz.forfun.puzzle.label.TileLabelVetoableChangeListener;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
@@ -26,7 +29,7 @@ import javax.swing.JLabel;
  * This is a famous concept in chess engines.
  * https://www.chessprogramming.org/Bitboards
  */
-public class EightController extends JLabel implements VetoableChangeListener, PropertyChangeListener {
+public class EightController extends JLabel implements TileLabelVetoableChangeListener {
 
     private BitSet hole;
 
@@ -34,13 +37,12 @@ public class EightController extends JLabel implements VetoableChangeListener, P
         setText("START");
     }
 
-    public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {
-        if (!(evt.getSource() instanceof EightTile movedTile)) {
-            throw new RuntimeException("");
-        }
-        if (((int) evt.getOldValue()) == Options.RESTART_VALUE) {
+    @Override
+    public void vetoableChange(LabelChangeEvent evt) throws PropertyVetoException {
+        if (evt.isRestartChange()) {
             return;
         }
+        EightTile movedTile = evt.getSource();
         BitSet tile = Bitboards.instance(movedTile.getPosition() - 1);
         if (tile == hole) {
             return;
@@ -52,9 +54,11 @@ public class EightController extends JLabel implements VetoableChangeListener, P
     }
 
     //restart
+    /*
     public void propertyChange(PropertyChangeEvent evt) {
         List<Integer> labels = (List<Integer>) evt.getNewValue();
         int holePosition = labels.indexOf(Options.HOLE_VALUE);
         hole = Bitboards.instance(holePosition);
     }
+    */
 }
