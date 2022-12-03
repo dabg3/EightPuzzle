@@ -45,6 +45,7 @@ public class EightController extends JLabel implements TileLabelVetoableChangeLi
         EightTile movedTile = evt.getSource();
         BitSet tile = Bitboards.instance(movedTile.getPosition() - 1);
         if (tile.intersects(lastHole)) {
+            lastHole.clear();
             return;
         }
         System.out.println("received move from tile pos " + movedTile.getPosition());
