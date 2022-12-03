@@ -90,9 +90,27 @@ public class EightBoard extends JFrame implements TileLabelChangeListener {
     }
 
     @Override
-    public void tileLabelChange(LabelChangeEvent evt) {
-        //TODO
+    public void tileLabelChange(LabelChangeEvent evt) throws PropertyVetoException {
+        EightTile tile = evt.getSource();
+        int label = (int) evt.getNewValue();
+        if (evt.isRestartChange()) {
+            tile.setText(String.valueOf(evt.getNewValue()));
+            tile.setEnabled(label != HOLE_VALUE);
+            if (label == HOLE_VALUE) {
+                hole = tile;
+            }
+            return;
+        }
+        tile.setEnabled(label != HOLE_VALUE);
+        tile.setText(String.valueOf(label));
+        if (label == HOLE_VALUE) {
+            EightTile lastHole = hole;
+            hole = tile;
+            //this does not trigger vetoableChange listener
+            lastHole.setLabel((int) evt.getOldValue());
+        }
     }
+
 
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(() -> {

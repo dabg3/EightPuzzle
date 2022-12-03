@@ -5,10 +5,7 @@ import xyz.forfun.puzzle.label.TileLabelVetoableChangeListener;
 import xyz.forfun.puzzle.restart.RestartEvent;
 import xyz.forfun.puzzle.restart.RestartListener;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
-import java.beans.VetoableChangeListener;
 import java.util.BitSet;
 import java.util.List;
 
@@ -33,7 +30,8 @@ import javax.swing.JLabel;
  */
 public class EightController extends JLabel implements TileLabelVetoableChangeListener, RestartListener {
 
-    private BitSet hole;
+    private BitSet currentHole;
+    private BitSet lastHole;
 
     public EightController() {
         setText("START");
@@ -46,20 +44,23 @@ public class EightController extends JLabel implements TileLabelVetoableChangeLi
         }
         EightTile movedTile = evt.getSource();
         BitSet tile = Bitboards.instance(movedTile.getPosition() - 1);
-        if (tile == hole) {
+        if (tile.intersects(lastHole)) {
             return;
         }
-        if (!Bitboards.isTileMovible(tile, hole)) {
+        System.out.println("received move from tile pos " + movedTile.getPosition());
+        if (!Bitboards.isTileMovible(tile, currentHole)) {
             throw new PropertyVetoException("Clicked tile cannot be moved", evt);
         }
-        hole = tile;
+        lastHole = currentHole;
+        currentHole = tile;
     }
 
     @Override
     public void restart(RestartEvent evt) {
         List<Integer> labels = evt.getNewValue();
         int holePosition = labels.indexOf(Options.HOLE_VALUE);
-        hole = Bitboards.instance(holePosition);
+        currentHole = Bitboards.instance(holePosition);
+        lastHole = Bitboards.instance();
     }
 
 }
