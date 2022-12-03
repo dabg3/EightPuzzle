@@ -87,17 +87,18 @@ public class Bitboards {
     }
 
     private static boolean isUpMovible(BitSet tile, BitSet hole) {
-        return isAdjacent(tile, hole, Bitboards.TOP_ROW, 3);
+        return isAdjacent(tile, hole, Bitboards.TOP_ROW, ROWS);
     }
 
     private static boolean isDownMovible(BitSet tile, BitSet hole) {
-        return isAdjacent(tile, hole, Bitboards.BOTTOM_ROW, 3);
+        return isAdjacent(tile, hole, Bitboards.BOTTOM_ROW, ROWS);
     }
 
     private static boolean isAdjacent(BitSet tile, BitSet hole,
                                       BitSet boardEdge,
                                       int expectedBitsOffset)
     {
+        printDebugInfo(tile, hole, boardEdge, expectedBitsOffset);
         if (boardEdge.intersects(tile)) {
             return false;
         }
@@ -106,6 +107,25 @@ public class Bitboards {
             return false;
         }
         return true;
+    }
+
+    private static void printDebugInfo(BitSet tile, BitSet hole, BitSet boardEdge, int offset) {
+        System.out.println("+++++++++++cycle+++++++++++++");
+        printBitSetAsBoard(tile, "tile position");
+        printBitSetAsBoard(hole, "hole position");
+        printBitSetAsBoard(boardEdge, "edge");
+        System.out.println("+++++++++++++++++++++++++++++");
+    }
+
+    private static void printBitSetAsBoard(BitSet board, String info) {
+        System.out.printf("-----%s-----\n", info);
+        for (int i = 0; i < ROWS * COLUMNS; i++) {
+            System.out.print(board.get(i) ? " 1 " : " 0 ");
+            if ((i + 1) % ROWS == 0) {
+                System.out.println();
+            }
+        }
+        System.out.println();
     }
 
     private Bitboards() {
