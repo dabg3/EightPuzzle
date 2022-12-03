@@ -11,7 +11,7 @@ public interface TileLabelChangeListener extends PropertyChangeListener {
         try {
             tileLabelChange(LabelChangeEvent.fromPropertyChangeEvent(evt));
         } catch (PropertyVetoException ex) {
-            throw new RuntimeException("change vetoed"); //TODO: improve exception
+            throw new IllegalStateException("[FAILURE] Hole tile is inconsistent");
         }
     }
 
