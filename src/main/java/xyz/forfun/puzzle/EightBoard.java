@@ -7,12 +7,9 @@ import xyz.forfun.puzzle.restart.RestartButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 
 import static xyz.forfun.puzzle.Options.HOLE_VALUE;
-import static xyz.forfun.puzzle.Options.RESTART_VALUE;
 
 /*
  * EightBoard manages the elements to be displayed and their layout.
@@ -76,7 +73,6 @@ public class EightBoard extends JFrame implements TileLabelChangeListener {
         tile.addVetoableChangeListener(controller);
         tile.addPropertyChangeListener("label", this);
         tile.addActionListener(this::onTileClick);
-        //restart.addPropertyChangeListener(tile);
     }
 
     private void onTileClick(ActionEvent evt) {
@@ -94,7 +90,7 @@ public class EightBoard extends JFrame implements TileLabelChangeListener {
         EightTile tile = evt.getSource();
         int label = (int) evt.getNewValue();
         if (evt.isRestartChange()) {
-            tile.setText(String.valueOf(evt.getNewValue()));
+            tile.setText(String.valueOf(label));
             tile.setEnabled(label != HOLE_VALUE);
             if (label == HOLE_VALUE) {
                 hole = tile;
@@ -106,7 +102,6 @@ public class EightBoard extends JFrame implements TileLabelChangeListener {
         if (label == HOLE_VALUE) {
             EightTile lastHole = hole;
             hole = tile;
-            //this does not trigger vetoableChange listener
             lastHole.setLabel((int) evt.getOldValue());
         }
     }

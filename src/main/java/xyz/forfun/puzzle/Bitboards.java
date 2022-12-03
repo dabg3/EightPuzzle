@@ -98,7 +98,6 @@ public class Bitboards {
                                       BitSet boardEdge,
                                       int expectedBitsOffset)
     {
-        printDebugInfo(tile, hole, boardEdge, expectedBitsOffset);
         if (boardEdge.intersects(tile)) {
             return false;
         }
@@ -109,6 +108,10 @@ public class Bitboards {
         return true;
     }
 
+    private Bitboards() {
+    }
+
+    /*
     private static void printDebugInfo(BitSet tile, BitSet hole, BitSet boardEdge, int offset) {
         System.out.println("+++++++++++cycle+++++++++++++");
         printBitSetAsBoard(tile, "tile position");
@@ -127,7 +130,5 @@ public class Bitboards {
         }
         System.out.println();
     }
-
-    private Bitboards() {
-    }
+    */
 }
