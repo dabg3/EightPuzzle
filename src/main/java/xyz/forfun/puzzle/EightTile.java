@@ -3,13 +3,11 @@ package xyz.forfun.puzzle;
 import xyz.forfun.puzzle.restart.RestartEvent;
 import xyz.forfun.puzzle.restart.RestartListener;
 
-import java.awt.event.ActionEvent;
-import java.beans.*;
+import javax.swing.*;
+import java.beans.PropertyVetoException;
 import java.util.List;
 
-import javax.swing.JButton;
-
-public class EightTile extends JButton implements RestartListener { //implements RestartListener instead
+public class EightTile extends JButton implements RestartListener {
     /*
      * position indexes a tile on the board.
      * Top left is 1, bottom right is 9
@@ -43,14 +41,16 @@ public class EightTile extends JButton implements RestartListener { //implements
         this.label = tileNumber;
     }
 
-    //restart
     @Override
     public void restart(RestartEvent evt) {
-        List<Integer> restartLabels = (List<Integer>) evt.getNewValue();
+        List<Integer> restartLabels = evt.getNewValue();
         try {
+            this.label = Options.RESTART_VALUE;
             setLabel(restartLabels.get(position - 1));
         } catch (PropertyVetoException e) {
             throw new IllegalStateException("Unable to restart");
         }
     }
+
+
 }

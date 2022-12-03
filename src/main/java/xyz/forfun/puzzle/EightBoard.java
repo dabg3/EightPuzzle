@@ -2,6 +2,7 @@ package xyz.forfun.puzzle;
 
 import xyz.forfun.puzzle.label.LabelChangeEvent;
 import xyz.forfun.puzzle.label.TileLabelChangeListener;
+import xyz.forfun.puzzle.restart.RestartButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,13 +20,13 @@ import static xyz.forfun.puzzle.Options.RESTART_VALUE;
 public class EightBoard extends JFrame implements TileLabelChangeListener {
 
     private EightController controller;
-    //private RestartAction restart = new RestartAction();
+    private RestartButton restart;
 
     private EightTile hole;
 
     public EightBoard() {
         initComponents();
-        //restart.actionPerformed(null); //init board
+        restart.doClick();
     }
 
     /*
@@ -43,12 +44,10 @@ public class EightBoard extends JFrame implements TileLabelChangeListener {
     private JPanel initControlPanel() {
         JPanel control = new JPanel(new GridLayout(1, 3, 0, 3));
         controller = new EightController();
+        restart = new RestartButton();
+        restart.addRestartListener(controller);
         control.add(controller);
-        //restart.addPropertyChangeListener(controller);
-
-        JButton restart_butt = new JButton("Restart");
-        //restart_butt.addActionListener(restart);
-        control.add(restart_butt);
+        control.add(restart);
 
         /*
         flip_butt = new JButton("Flip");
@@ -64,6 +63,7 @@ public class EightBoard extends JFrame implements TileLabelChangeListener {
             EightTile tile = new EightTile(pos);
             addListeners(tile);
             board.add(tile);
+            restart.addRestartListener(tile);
         }
         return board;
     }
@@ -84,48 +84,14 @@ public class EightBoard extends JFrame implements TileLabelChangeListener {
         try {
             clickedTile.setLabel(HOLE_VALUE);
         } catch (PropertyVetoException e) {
+            System.err.println("Illegal move! tile position:" + ((EightTile) evt.getSource()).getPosition());
             //TODO: flash tile background
         }
     }
 
     @Override
     public void tileLabelChange(LabelChangeEvent evt) {
-        // hole label update should be last instruction (no race conditions)
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (!evt.getPropertyName().equalsIgnoreCase("label")) {
-            return;
-        }
-        if (!(evt.getSource() instanceof EightTile tile)) {
-            throw new RuntimeException("");
-        }
-        int oldValue = (int) evt.getOldValue();
-        int newValue = (int) evt.getNewValue();
-
-        if (newValue == HOLE_VALUE) {
-            tile.setText("");
-            tile.setEnabled(false);
-            updateHoleLabel(oldValue);
-            hole = tile;
-        } else {
-           tile.setText(String.valueOf(newValue));
-           tile.setEnabled(true);
-        }
-    }
-
-
-
-    private void updateHoleLabel(int value) {
-        if (hole == null) {
-            return;
-        }
-        try {
-            hole.setLabel(value);
-        } catch (PropertyVetoException e) {
-            throw new IllegalStateException("Unable to update hole label");
-        }
+        //TODO
     }
 
     public static void main(String[] args) {

@@ -6,7 +6,7 @@ public class RestartButton extends JButton {
 
     private RestartAction restartAction;
 
-    public RestartButton(String text) {
+    public RestartButton() {
         super("Restart");
         restartAction = new RestartAction();
         this.addActionListener(restartAction);

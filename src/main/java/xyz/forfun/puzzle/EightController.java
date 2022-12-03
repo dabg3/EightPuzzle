@@ -2,6 +2,8 @@ package xyz.forfun.puzzle;
 
 import xyz.forfun.puzzle.label.LabelChangeEvent;
 import xyz.forfun.puzzle.label.TileLabelVetoableChangeListener;
+import xyz.forfun.puzzle.restart.RestartEvent;
+import xyz.forfun.puzzle.restart.RestartListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -29,7 +31,7 @@ import javax.swing.JLabel;
  * This is a famous concept in chess engines.
  * https://www.chessprogramming.org/Bitboards
  */
-public class EightController extends JLabel implements TileLabelVetoableChangeListener {
+public class EightController extends JLabel implements TileLabelVetoableChangeListener, RestartListener {
 
     private BitSet hole;
 
@@ -53,12 +55,11 @@ public class EightController extends JLabel implements TileLabelVetoableChangeLi
         hole = tile;
     }
 
-    //restart
-    /*
-    public void propertyChange(PropertyChangeEvent evt) {
-        List<Integer> labels = (List<Integer>) evt.getNewValue();
+    @Override
+    public void restart(RestartEvent evt) {
+        List<Integer> labels = evt.getNewValue();
         int holePosition = labels.indexOf(Options.HOLE_VALUE);
         hole = Bitboards.instance(holePosition);
     }
-    */
+
 }
