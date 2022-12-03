@@ -2,14 +2,16 @@ package xyz.forfun.puzzle.restart;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class RestartAction extends AbstractAction {
+class RestartAction extends AbstractAction {
 
-    private List<Integer> labelsByPosition = new ArrayList<>();
+    RestartAction() {
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -24,8 +26,8 @@ public class RestartAction extends AbstractAction {
             labels[a] = labels[b];
             labels[b] = temp;
         }
-        List<Integer> lastLabels = labelsByPosition;
-        labelsByPosition = Arrays.asList(labels);
-        this.firePropertyChange("labelsByPosition", lastLabels, labelsByPosition);
+        List<Integer> labelsByPosition = Arrays.asList(labels);
+        putValue("initializedLabels", labelsByPosition);
     }
+
 }

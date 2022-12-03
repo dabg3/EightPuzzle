@@ -2,7 +2,6 @@ package xyz.forfun.puzzle;
 
 import xyz.forfun.puzzle.label.LabelChangeEvent;
 import xyz.forfun.puzzle.label.TileLabelChangeListener;
-import xyz.forfun.puzzle.restart.RestartAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,13 +19,13 @@ import static xyz.forfun.puzzle.Options.RESTART_VALUE;
 public class EightBoard extends JFrame implements TileLabelChangeListener {
 
     private EightController controller;
-    private RestartAction restart = new RestartAction();
+    //private RestartAction restart = new RestartAction();
 
     private EightTile hole;
 
     public EightBoard() {
         initComponents();
-        restart.actionPerformed(null); //init board
+        //restart.actionPerformed(null); //init board
     }
 
     /*
@@ -45,10 +44,10 @@ public class EightBoard extends JFrame implements TileLabelChangeListener {
         JPanel control = new JPanel(new GridLayout(1, 3, 0, 3));
         controller = new EightController();
         control.add(controller);
-        restart.addPropertyChangeListener(controller);
+        //restart.addPropertyChangeListener(controller);
 
         JButton restart_butt = new JButton("Restart");
-        restart_butt.addActionListener(restart);
+        //restart_butt.addActionListener(restart);
         control.add(restart_butt);
 
         /*
@@ -77,7 +76,7 @@ public class EightBoard extends JFrame implements TileLabelChangeListener {
         tile.addVetoableChangeListener(controller);
         tile.addPropertyChangeListener("label", this);
         tile.addActionListener(this::onTileClick);
-        restart.addPropertyChangeListener(tile);
+        //restart.addPropertyChangeListener(tile);
     }
 
     private void onTileClick(ActionEvent evt) {
