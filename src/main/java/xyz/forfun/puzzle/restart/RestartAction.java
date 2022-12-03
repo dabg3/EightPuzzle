@@ -19,7 +19,7 @@ class RestartAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         List<Integer> labelsByPosition = new ArrayList<>(Options.ROWS * Options.COLUMNS);
-        for (int i = 0; i <= Options.ROWS * Options.COLUMNS; i++) {
+        for (int i = 1; i <= Options.ROWS * Options.COLUMNS; i++) {
             labelsByPosition.add(i);
         }
 
