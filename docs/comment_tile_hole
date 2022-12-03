@@ -1,5 +1,7 @@
+THIS IS STILL VALID! Controller stuff
+
 /*
-* Why is true returned if tile matches hole??
+* Why is true returned if tile matches lastHole??
 * Since hole button is disabled so not clickable,
 * only when hole label is explicitly set by EightBoard
 * this condition happens to be true.
